@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap');
+body {
+    background-color: #ffe5ec;
+}
+.navbar ul{
+    list-style-type: none;
+    background-color: #99658f87;
+    padding: 0px;
+    display: flex;
+    margin: 0px;
+    overflow: hidden;
+
+}
+.navbar a{
+color: white;
+text-decoration: none;
+padding: 15px;
+margin: 5px;
+display: block;
+text-align: center;
+}
+.navbar a:hover{
+    background-color: #ddbea9;
+}
+.navbar li{
+    position: relative;
+    left: 40%;
+}   
+
+.container {
+    display: flex;
+}
+.deleteNoteBtn {
+    background-color: #ff6f6f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.deleteNoteBtn:hover {
+    background-color: #ff4c4c;
+}
+.sidebar {
+    width: 200px;
+    background-color: #ffe5ec;
+    padding: 20px;
+    border: solid;
+    border-radius: 5%;
+    height: 100%;
+    position: relative;
+    top: 7.1vw;
+    border-color: #353535;
+
+
+}
+
+.note-area {
+    flex-grow: 1;
+    padding: 20px;
+
+}
+
+#newNoteBtn {
+    margin-bottom: 20px;
+    background-color: #ffe5ec;
+    border-color:#ffe5ec;
+}
+
+#noteList {
+    list-style-type: none;
+    padding: 0;
+}
+
+h1{
+    font-size: 40px;
+    font-weight: bolder;
+    font-family: 'Edu VIC WA NT Beginner';
+    color: #353535;
+}
+#noteList li {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#notepad {
+    width: 100%;
+    height: 530px;
+    background-color: #ffe5ec;
+    border: solid;
+    border-color: #353535;
+    border-radius: 2%;
+    resize: vertical; /* İsteğe bağlı olarak kullanıcıya yüksekliği değiştirme imkanı verebilirsin */
+
+
+}

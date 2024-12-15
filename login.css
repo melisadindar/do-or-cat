@@ -1,0 +1,55 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #ffe5ec;
+    overflow: hidden;
+}
+img{
+    position: absolute;
+    width: 500px;
+    left: 38%;
+    top: -2.2%;
+
+}
+.registerform{
+    color: #353535;
+    display: flex;
+    padding: 20px;
+    position: absolute;
+    left: 40%;
+    top: 18%;
+    border: 4px solid #353535; /* Çizgi rengi ve kalınlığı */
+    border-radius: 8px; /* Köşeleri yuvarlak yapmak için isteğe bağlı */
+    height: 70%;
+}
+.btn{
+    background-color: #dbdbdb;
+    position: absolute;
+    left: 1vw;
+    top: 40%;
+    height: 2.5vw;
+    width: 20vw;
+}
+.link{
+    position: absolute;
+    left: 110px;
+    top:50%;
+    color: #353535;    
+}  
+h1{
+    position: relative;
+}
+.txt{
+    left: -20px;
+
+}
+
+.registerform input{
+    height: 38px;
+    display: block;
+    width: 100%;
+    padding: 0 16px;
+    text-align: center;
+    box-sizing: border-box;
+    border: none;
+}

@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+body{
+    background-color: #ffe5ec;
+    overflow: hidden;
+}.ilkbaslik{
+    font-family: 'Oswald';
+    margin-left: 46%;
+    font-size: 55px;
+    color: #1b263b;
+    margin-bottom: 1px;
+    margin-top: 1px;
+}hr {
+    border: 0;
+    height: 3.5px;
+    background-color: #1b263b; /* Çizgi rengi */
+    margin-top: 10px;
+    margin-bottom: 20px;
+}.image-container{
+    position: absolute;
+    width: 40vw;
+    height: 56vw;
+    display: flex;
+    margin-top: -7vw;
+    margin-left: 1%
+    
+}.registerbttn {
+    position: absolute;
+    top: 44.5%;
+    left: 43.10%;
+    width: 5vw;
+    height: 2.5vw;
+    opacity: 1;
+    font-size: 0.9vw;
+    font-family: 'Edu VIC WA NT Beginner';
+    font-weight: 1000;
+}.loginbttn{
+    position: absolute;
+    top: 44.5%;
+    left: 56.18%;
+    width: 5vw;
+    height: 2.5vw;
+    opacity: 1;
+    font-size: 0.9vw;
+    font-family: 'Edu VIC WA NT Beginner';
+    font-weight: 1000;
+}
+.text-container{
+    position: absolute;
+    width: 40vw;
+    height: 56vw;
+    display: flex;
+    margin-top: 8vw;
+    margin-left: 50%;
+    text-align: left;
+    font-size: larger;
+    font-family: 'Oswald';
+    font-weight: 400;
+    color: #1b263b;
+    max-width: 50%;
+}

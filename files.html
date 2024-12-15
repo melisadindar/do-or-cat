@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap');
+        body {
+            background-color: #ffe5ec;
+        }
+        .navbar ul{
+            list-style-type: none;
+            background-color: #99658f87;
+            padding: 0px;
+            display: flex;
+            margin: 0px;
+            overflow: hidden;
+        }
+        h1{
+            font-size: 40px;
+            display: flex;
+            margin-left: 46.5%;
+            color: #353535;
+            font-family: 'Edu VIC WA NT Beginner';
+        }
+        .navbar a{
+        color: white;
+        text-decoration: none;
+        padding: 15px;
+        margin: 5px;
+        display: block;
+        text-align: center;
+        }
+        .navbar a:hover{
+            background-color: #ddbea9;
+        }
+        .navbar li{
+            position: relative;
+            left: 40%;
+        }   
+            #fileInput {
+                display: none; /* Dosya input'ını gizle */
+            }
+            #fileInputLabel {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #99658f87;
+                color: #fff;
+                text-align: center;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: uppercase;
+                border: none;
+                transition: background-color 0.3s;
+            }
+            #fileInputLabel:hover {
+                background-color: #d270d7;
+            }
+            #uploadButton{
+                display: inline-block;
+                padding: 10px 20px;
+                width: 10%;
+                background-color: #99658f87;
+                color: #fff;
+                text-align: center;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: uppercase;
+                border: none;
+                transition: background-color 0.3s;
+            }
+            #uploadButton:hover {
+                background-color: #d270d7;
+            }
+            h2{
+               color: #353535;
+               font-size: 35px;
+               font-weight: bolder;
+               display: flex;
+               margin-top: 3%;
+
+            }
+            .file-item {
+                margin: 10px 0;
+                padding: 10px;
+                border: 1px solid #99658f87;
+                background-color: #f7d9e1;
+                border-radius: 5px;
+            }
+
+            .file-link {
+                text-decoration: none;
+                color: #353535;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .file-link:hover {
+                color: #d270d7;
+            }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="calendar.html">Calendar</a></li>
+            <li><a href="notes.html">Notes</a></li>
+            <li><a href="files.html">Files</a></li>
+        </ul>
+    </nav>
+    <h1>Files</h1>
+    <!-- Dosya seçme butonu için etiket -->
+    <label id="fileInputLabel" for="fileInput">Choose files</label>
+    <input type="file" id="fileInput" multiple />
+    <button id="uploadButton">Upload</button>
+    <div id="fileList">
+        <h2>Uploaded Files:</h2>
+        <!-- Yüklenen dosyalar buraya listelenecek -->
+    </div>
+    <script>
+        // IndexedDB'yi başlat
+        let db;
+        const request = indexedDB.open("FileStorage", 1);
+
+        request.onupgradeneeded = function(event) {
+            db = event.target.result;
+            db.createObjectStore("files", { keyPath: "id", autoIncrement: true });
+        };
+
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            displayFiles(); // Sayfa yüklendiğinde dosyaları göster
+        };
+
+        request.onerror = function(event) {
+            console.error("Database error:", event.target.errorCode);
+        };
+
+        // Dosya yükleme işlemi
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+            if (files.length === 0) {
+                alert("Please select at least one file.");
+                return;
+            }
+
+            // Dosyaları sırayla oku ve veritabanına kaydet
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = (function(file) {
+                    return function(event) {
+                        const transaction = db.transaction(["files"], "readwrite");
+                        const store = transaction.objectStore("files");
+                        store.put({ fileName: file.name, fileData: event.target.result });
+
+                        transaction.oncomplete = function() {
+                            displayFiles(); // Dosyalar yüklendikten sonra listeyi güncelle
+                        };
+
+                        transaction.onerror = function(event) {
+                            console.error("Transaction error:", event.target.errorCode);
+                        };
+                    };
+                })(file);
+
+                reader.readAsArrayBuffer(file);
+            }
+
+            alert("Files are being uploaded.");
+        });
+
+        // Dosyaları görüntüleme
+        function displayFiles() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '<h2>Uploaded Files:</h2>'; // Başlığı tekrar ekleyin
+
+            const transaction = db.transaction(["files"], "readonly");
+            const store = transaction.objectStore("files");
+            const request = store.getAll();
+
+            request.onsuccess = function(event) {
+                const files = event.target.result;
+                files.forEach(function(file) {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    // Dosya içeriğini veri URL'si olarak oluştur
+                    const blob = new Blob([file.fileData], { type: 'application/octet-stream' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Dosya bağlantısını oluştur
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = file.fileName;
+                    link.className = 'file-link';
+                    link.textContent = file.fileName;
+
+                    fileItem.appendChild(link);
+                    fileList.appendChild(fileItem);
+                });
+            };
+
+            request.onerror = function(event) {
+                console.error("Request error:", event.target.errorCode);
+            };
+        }
+    </script>
+</body>
+</html>
