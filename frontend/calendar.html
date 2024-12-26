@@ -10,44 +10,51 @@
             background-color: #ffe5ec;
         }
         #calendar {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            top: 20px;
+            max-width: 900px; /*calendar öğesinin max genişliği 900 piksel olacak*/
+            margin: 0 auto; /*öğenin yatayda ortalanmasını sağlar. üst ve alt margini sıfırlarken sol ve sağ marginleri otomatik olarak ayarlayarak
+            öğeyi yatayda ortalar*/
+            position: relative; /*relative konumlandırma öğrenin bulunduğu yerden kaydırılmasını sağlar
+            yani öğe başka bir öğeye göre değil kendi yerinden kaydırılır*/
+            top: 20px;/*yukarıdan 20 piksel aşağıya kaydırılır*/
         }
         .event-details, .add-todo-modal {
-            display: none;
-            position: fixed;
+            display: none; /*event-detailsin ve de add-todo-modalın başlangıçta görünmemesini sağlar.*/
+            position: fixed; /*öğe sayfa kaydırılırsa bile sabit tutar*/
             background: #d6eadf;
             border: 1px solid #000000;
             color: #5d5959;
-            padding: 20px;
+            padding: 10px; /*öğenin içindeki içeriği kenarlardan 10px uzaklıkta tutar*/
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
+            transform: translate(-50%, -50%); /*öğeyi hem yatayda hem de dikeyde %50 kaydırarak öğreyi ekranın tam ortasına yerleştirir*/
+            z-index: 1000; /*katman sırasını belirler. z-index değeri ne kadar yüksekse o kadar üstte yer alır*/
         }
-        .modal-header {
-            font-weight: bold;
+        .modal-header { 
+            font-weight:200;
             position: relative;
+            color: #5d5959;
+
         }
-        #-add-todo-modal, #close-event-details {
-            font-size: 1.5em;
+        #add-todo-modal .modal-header p{
+
+            color: #5d5959;
+        }
+        #close-add-todo-modal:hover, #close-event-details:hover { /*kapatma çapılarının tıkladığındaki rengini ve oraya gelince imlecin değişmesini ayarlar*/
             color: #000000;
-            position: absolute;
-            margin-top: -6%;
-            top: 0;
-            right: 0;
             cursor: pointer;
         }
-        #close-add-todo-modal:hover, #close-event-details:hover {
-            color: #000000;
+        #close-add-todo-modal{ /*görev eklemenin kapatma çarpısını sağ üste alır*/
+            display: flex;
+            justify-content: right;
         }
         .todo-item {
             display: flex;
-            align-items: center;
+            align-items: center; /* Metni dikeyde ortalar */
+            justify-content: flex-start; /* Yatayda sola hizalar */
             margin-bottom: 5px;
         }
+
+
         .todo-item input[type="checkbox"] {
             margin-left: auto;
         }
@@ -67,6 +74,7 @@
             background-color: #99658f87;
             padding: 0px;
             display: flex;
+            justify-content: center;
             margin: 0px;
             overflow: hidden;
 
@@ -82,10 +90,7 @@
         .navbar a:hover{
             background-color: #ddbea9;
         }
-        .navbar li{
-            position: relative;
-            left: 40%;
-        }
+
     </style>
 </head>
 <body>
@@ -99,14 +104,14 @@
     <div id='calendar'></div>
     <div id="event-details" class="event-details">
         <div class="modal-header">
-            <span id="close-event-details">&times;</span>
+            <span id="close-event-details">&times;</span> <!-- &times ifadesi bir html karakter referansıdır ve "x" anlamına gelir--> 
         </div>
         <div id="event-details-content"></div>
     </div>
     <div id="add-todo-modal" class="add-todo-modal">
         <div class="modal-header">
             <span id="close-add-todo-modal">&times;</span>
-            Add To-Do
+            <p>Add To-Do</p>
         </div>
         <form id="add-todo-form">
             <label for="todo">To-Do Item:</label>
