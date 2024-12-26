@@ -1,0 +1,24 @@
+@url = http://localhost:8000
+
+### signup
+POST {{url}}/auth_service/signup/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username" : "bgg",
+    "first_name" : "Beste",
+    "last_name" : "Gürsoy",
+    "password" : "123456",
+    "email" : "1243@gmail.com"
+}
+
+
+### signin
+# @name signin
+POST {{url}}/auth_service/signin/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username" : "bg",
+    "password" : "123456"
+}

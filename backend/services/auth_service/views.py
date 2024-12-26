@@ -1,5 +1,6 @@
 import json
 from .models import Users
+from django.contrib.auth import authenticate
 from django.http import JsonResponse
 
 def signup(request):
@@ -22,18 +23,17 @@ def signup(request):
 
     return JsonResponse({'message': 'unvalid request'})
 
-
 def signin(request):
-    if request == 'POST':
+    if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
-
-        user = Users.objects.get(username=username)
-        if user and user.check_password(password):
+        user = authenticate(username=username, password=password)
+        if user:
             return JsonResponse({'message': 'success'})
         else:
             return JsonResponse({'message': 'failed'})
+    return JsonResponse({'message': 'unvalid request'})
 
 
 

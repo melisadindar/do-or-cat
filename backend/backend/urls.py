@@ -21,5 +21,6 @@ from services.auth_service import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth_service/signup/', views.signup)
+    path('auth_service/signup/', views.signup),
+    path('auth_service/signin/', views.signin),
 ]
