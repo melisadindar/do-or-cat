@@ -1,6 +1,5 @@
 import json
 from .models import Users
-from django.contrib.auth import authenticate
 from django.http import JsonResponse
 
 def signup(request):
@@ -28,7 +27,14 @@ def signin(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
-        user = authenticate(username=username, password=password)
+
+        if not Users.objects.filter(username=username).exists():
+            return JsonResponse({'message': 'user not found'})
+        
+        if not Users.objects.filter(password=password).exists():
+            return JsonResponse({'message': 'password is incorrect'})
+
+        user = Users.objects.get(username=username, password=password)
         if user:
             return JsonResponse({'message': 'success'})
         else:

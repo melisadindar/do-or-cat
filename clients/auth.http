@@ -14,11 +14,10 @@ Content-Type: application/json
 
 
 ### signin
-# @name signin
 POST {{url}}/auth_service/signin/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username" : "bg",
+    "username" : "bgg",
     "password" : "123456"
 }
