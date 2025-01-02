@@ -4,6 +4,8 @@ FROM python:3.11-slim
 RUN apt-get update && \
     apt-get install -y dos2unix curl python3 python3-pip
 
+RUN apt-get update && apt-get install -y libpq-dev gcc
+
 # Çalışma dizinini ayarla
 WORKDIR /app
 

@@ -5,11 +5,11 @@ POST {{url}}/auth_service/signup/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username" : "esdasdk55e",
+    "username" : "esdasdfrsdk55e",
     "first_name" : "Beste",
     "last_name" : "Gürsoy",
     "password" : "123456",
-    "email" : "jsaasdd55@gmail.com"
+    "email" : "jsaarsdfsdd55@gmail.com"
 }
 
 
