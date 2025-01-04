@@ -1,7 +1,7 @@
 import json
 from .models import Users
 from django.http import JsonResponse
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 
 def signup(request):
@@ -23,26 +23,27 @@ def signup(request):
         Users.objects.create(username=username, password=hashed_password, email=email, first_name=first_name, last_name=last_name)
         return JsonResponse({'message': 'user created successfully'})
 
-    return JsonResponse({'message': 'unvalid request'})
+    return JsonResponse({'message': 'invalid request'})
 
 def signin(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
 
-        if not Users.objects.filter(username=username).exists():
-            return JsonResponse({'message': 'user not found'})
-        
-        if not Users.objects.filter(password=password).exists():
-            return JsonResponse({'message': 'password is incorrect'})
+        if not email or not password:
+            return JsonResponse({'message' : 'Enter your email and password'}, status=400)
 
-        user = Users.objects.get(username=username, password=password)
-        if user:
-            return JsonResponse({'message': 'success'})
-        else:
-            return JsonResponse({'message': 'failed'})
-    return JsonResponse({'message': 'unvalid request'})
+        try:
+            user = Users.objects.get(email=email)
+        except Users.DoesNotExist:
+            return JsonResponse({'message' : 'User not found'}, status=404)
+
+        if not check_password(password, user.password):
+            return JsonResponse({'message' : 'Incorrect password'}, status=400)
+        
+        return JsonResponse({'message' : 'Sign in is succes'}, status=200)
+    return JsonResponse({'message': 'invalid request'})
 
 
 
