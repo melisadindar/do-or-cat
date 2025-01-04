@@ -1,6 +1,8 @@
 import json
 from .models import Users
 from django.http import JsonResponse
+from django.contrib.auth.hashers import make_password
+
 
 def signup(request):
     if request.method == 'POST':
@@ -17,7 +19,8 @@ def signup(request):
         if Users.objects.filter(email=email).exists():
             return JsonResponse({'message': 'email already exists'})
 
-        Users.objects.create(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+        hashed_password = make_password(password)
+        Users.objects.create(username=username, password=hashed_password, email=email, first_name=first_name, last_name=last_name)
         return JsonResponse({'message': 'user created successfully'})
 
     return JsonResponse({'message': 'unvalid request'})

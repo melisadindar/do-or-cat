@@ -1,0 +1,8 @@
+# Python ile ilgili dosyalar
+*.pyc
+__pycache__/
+*.log
+
+# Docker ile ilgili dosyalar
+*.env
+*.pid
