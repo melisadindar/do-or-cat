@@ -8,40 +8,41 @@
         @import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap');
         body {
             background-color: #ffe5ec;
-        }
-        .navbar ul{
-            list-style-type: none;
-            background-color: #99658f87;
-            padding: 0px;
-            display: flex;
-            justify-content: center;
-            margin: 0px;
-            overflow: hidden;
-        }
-        h1{
-            font-size: 40px;
-            display: flex;
-            margin-left: 46.5%;
-            color: #353535;
-            font-family: 'Edu VIC WA NT Beginner';
-        }
-        .navbar a{
-        color: white;
-        text-decoration: none;
-        padding: 15px;
-        margin: 5px;
-        display: block;
-        text-align: center;
-        }
-        .navbar a:hover{
-            background-color: #ddbea9;
-        }
+            }
+            .navbar ul{
+                list-style-type: none;
+                background-color: #99658f87;
+                padding: 0px;
+                display: flex;
+                justify-content: center;
+                margin: 0px;
+                overflow: hidden;
+            }
+            h1{
+                font-size: 40px;
+                display: flex;
+                margin-left: 46.5%;
+                color: #353535;
+                font-family: 'Edu VIC WA NT Beginner';
+            }
+            .navbar a{
+                color: white;
+                text-decoration: none;
+                padding: 15px;
+                margin: 5px;
+                display: block;
+                text-align: center;
+                }
+            .navbar a:hover{
+                background-color: #ddbea9;
+            }
             #fileInput {
                 display: none; /* Dosya input'ını gizle */
             }
             #fileInputLabel {
                 display: inline-block;
                 padding: 10px 20px;
+                min-width: 150px; /* Sabit minimum genişlik, sayfa küçüldükçe buton küçülmez */
                 background-color: #99658f87;
                 color: #fff;
                 text-align: center;
@@ -59,7 +60,7 @@
             #uploadButton{
                 display: inline-block;
                 padding: 10px 20px;
-                width: 10%;
+                min-width: 150px; /* Sabit minimum genişlik, sayfa küçüldükçe buton küçülmez */
                 background-color: #99658f87;
                 color: #fff;
                 text-align: center;

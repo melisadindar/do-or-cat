@@ -42,21 +42,32 @@
         #close-add-todo-modal:hover, #close-event-details:hover { /*kapatma çapılarının tıkladığındaki rengini ve oraya gelince imlecin değişmesini ayarlar*/
             color: #000000;
             cursor: pointer;
+     
         }
-        #close-add-todo-modal{ /*görev eklemenin kapatma çarpısını sağ üste alır*/
+        #close-add-todo-modal, #close-event-details{
             display: flex;
             justify-content: right;
         }
+        ul {
+            padding: 0; /* Listenin varsayılan boşluğunu sıfırlayın */
+            margin: 0; /* Listenin varsayılan marjını sıfırlayın */
+            list-style: none; /* Varsayılan madde işaretlerini kaldırın */
+            text-align: left; /* Liste elemanlarını sola hizalayın */
+            max-width: 100%;  /* Liste öğesinin genişliğini sınırla */
+        }
         .todo-item {
             display: flex;
-            align-items: center; /* Metni dikeyde ortalar */
-            justify-content: flex-start; /* Yatayda sola hizalar */
-            margin-bottom: 5px;
+            align-items: center;
+            text-align: left;
+            justify-content: flex-start;
+            width: 100%; /* Container'ın genişliğini %100 yapalım */
+            max-width: 100%;
+            margin: 5px 0;  /* Her görev arasına boşluk ekler */
+            flex-wrap: wrap;  /* Metin taşarsa alt satıra geçmesini sağlar */
+
         }
-
-
         .todo-item input[type="checkbox"] {
-            margin-left: auto;
+            margin-right: 10px;
         }
         .todo-item.completed {
             text-decoration: line-through;
@@ -67,7 +78,7 @@
             border: none;
             padding: 5px;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: auto;
         }
         .navbar ul{
             list-style-type: none;
@@ -76,7 +87,10 @@
             display: flex;
             justify-content: center;
             margin: 0px;
-            overflow: hidden;
+            max-width: 100%;
+            flex-wrap: wrap;  /* Metin fazla uzun olduğunda satıra sarılmasını sağlar */
+            overflow: hidden;  /* Taşan kısmı gizler */
+
 
         }
         .navbar a{
@@ -146,17 +160,33 @@
             addTodoModal.style.display = 'block';
         },
         eventClick: function(info) {
-            var details = `<h3>${info.event.title}</h3><ul>`;
+            var details = `<h3>${info.event.title}</h3><ul>`; 
+            /*info.event.title tıklanan olayın başlığı. bu başlığı h3 etiketi içine koyuyor.
+            ayrıca listeyi başlatmak için <ul> etiketi ekleniyor.*/
             info.event.extendedProps.todoList.forEach(function(item, index) {
+                /*info.event tıklanan etkinliğin bilgilerini içerir. örneğin
+                info.event.title = olayın başlığı
+                info.event.start = olayın başlangıç tarihi ve saati
+                info.event.end = olayın bitiş tarihi ve saati
+                extendedProps = FullCalendara ekstra bilgiler eklemeyi sağlar
+                todoList bir dizi şeklinde ve her öğesi bir görev bilgisi içeriyor. forEach bir dizi içindeki her öğeyi sırayla işler
+                Her bir öğe döngüde item olarak adlandırılır. Her öğenin dizideki sırası, index olarak gelir.
+                details kısmı liste öğelerini içeren bir HTML yapısını oluşturuyor. döngü sırasında her görev için bir <li> öğesi ekleniyor.
+                <li class="todo-item" data-index="${index}">: her göre için bir liste öğesi oluşturuluyor.
+                <input type="checkbox" ${item.completed ? 'checked' : ''}>: bir checkbox ekleniyor. eğer item.completed true ise checbox işaretli oluyor aksi halde işaretsiz
+                ${item.text}: görevin açıklaması(örn sunum hazırla) yazdırılıyor
+                <button class="delete-btn">X</button>: her görevin yanına bir silme butonu ekleniyor */
                 details += `
-                    <li class="todo-item" data-index="${index}">
-                        <input type="checkbox" ${item.completed ? 'checked' : ''}>
-                        ${item.text}
-                        <button class="delete-btn">X</button>
-                    </li>`;
+                <li class="todo-item" data-index="${index}">
+                    <input type="checkbox" ${item.completed ? 'checked' : ''}>
+                    <span class="todo-text">${item.text}</span> <!-- Metni burada bir span içine alıyoruz -->
+                    <button class="delete-btn">X</button>
+                </li>`;
             });
-            details += `</ul>`;
-            eventDetailsContentEl.innerHTML = details;
+            details += `</ul>`; /*yapının sonuna bir kapanış </ul> etiketi ekliyor*/
+            eventDetailsContentEl.innerHTML = details; /*eventDetailsContentEl: daha önce tanımlanmış bir DOM öğesi 
+            innerHTML: bit HTML elementinin içeriğini ayarlamak için kullanılır.
+            yukarıda dinamik olarak oluşturduğumuz HTML kodunu, exentDetailsContentEl öğesinin içine yerleştiriyor*/
             eventDetailsEl.style.display = 'block';
 
             // Sil butonuna tıklama olayını ekleyin

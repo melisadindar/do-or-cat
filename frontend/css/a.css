@@ -33,7 +33,8 @@ body{
     opacity: 1;
     font-size: 0.9vw;
     font-family: 'Edu VIC WA NT Beginner';
-    font-weight: 1000;
+    font-weight:1000;
+
 }.loginbttn{
     position: absolute;
     top: 44.5%;
