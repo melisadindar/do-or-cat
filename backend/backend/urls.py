@@ -16,11 +16,15 @@ Including another URLconf
 """
 #from django.contrib import admin
 from django.urls import path
-from services.auth_service import views
-
+from services.auth_service.views import CustomTokenObtainPairView
+from services.auth_service import views as auth_views
+from services.dailynotes_service import views as dailynotes_views
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
-    path('auth_service/signup/', views.signup),
-    path('auth_service/signin/', views.signin),
+    path('auth_service/signup/', auth_views.signup),
+    path('auth_service/signin/', auth_views.signin),
+    path('auth_service/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #path('auth_service/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('dailynotes_service/create_dailynotes/', dailynotes_views.create_dailynotes),
 ]
