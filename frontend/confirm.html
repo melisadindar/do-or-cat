@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get New Password</title>
+    <link rel="stylesheet" href="css/confirm.css">
+</head>
+<body>
+    <img src="photos/register.png" alt="registerimg">
+    <div class="passwordconfirm">
+        <form id="confirmemail">
+            <h1>Confirm Your E-mail!</h1>
+            <p>Enter the 4-digit code received to your e-mail address.</p>
+            <input type="code" class="code">
+            <input type="submit" value="Confirm" id="confirm" class="confirm">
+        </form>
+        <form action="login.html" id="newpassword" class="hidden">
+            <h1 id="neww">Get New Password!</h1>
+            <input type="password" placeholder="enter your new  password" class="txt" id="newwpassword">
+            <input type="password" placeholder="confirm your new password" id="newwpassword" class="txt">
+            <input type="submit" value="Reset Password" id="resetbtn">
+        </form>
+    </div>
+    <script src="js/newpassword.js"></script>
+</body>
+</html>

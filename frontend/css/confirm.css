@@ -1,0 +1,74 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #ffe5ec;
+    overflow: hidden;
+}
+img{
+    position: absolute;
+    width: 500px;
+    left: 37%;
+    top: 15%;
+}
+.passwordconfirm{
+    color: #353535;
+    display: flex;
+    padding: 20px;
+    position: absolute;
+    left: 38%;
+    top: 35%;
+    border: 4px solid #353535; /* Çizgi rengi ve kalınlığı */
+    border-radius: 8px; /* Köşeleri yuvarlak yapmak için isteğe bağlı */
+    height: 40%;
+}
+h1{
+    position: relative;
+    left: 8%;
+}
+.passwordconfirm input{
+    height: 38px;
+    display: block;
+    width: 100%;
+    padding: 0 16px;
+    text-align: center;
+    box-sizing: border-box;
+    border: none;
+}
+.confirm{
+    position: relative;
+    display: inline-block;
+    background-color: #dbdbdb;
+    top: 12%;
+    text-align: center;
+    cursor: pointer;
+}
+.hidden{
+    display: none;
+}
+#newpassword.visible {
+    display: block;
+}
+
+#neww{
+    position: relative;
+    left: 4%;
+}
+#newpassword input {
+    height: 38px;
+    display: block;
+    width: 100%;
+    padding: 0 16px;
+    text-align: center;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px; /* Inputlar arasına boşluk */
+}
+#resetbtn{
+        position: relative;
+        display: inline-block;
+        background-color: #dbdbdb;
+        top: 12%;
+        text-align: center;
+        cursor: pointer;
+}
