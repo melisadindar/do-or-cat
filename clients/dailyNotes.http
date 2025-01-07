@@ -1,0 +1,10 @@
+@url = http://localhost:8000
+
+### dailynotes
+POST {{url}}/dailynotes_service/create_dailynotes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "owner_mail" : "555@gmail.com",
+    "description" : "I am happy today"
+}
