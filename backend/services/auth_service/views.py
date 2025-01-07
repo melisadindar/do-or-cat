@@ -2,11 +2,7 @@ import json
 from .models import Users
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
-from .Serializers import CustomTokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
 
 def signup(request):
     if request.method == 'POST':

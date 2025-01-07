@@ -6,5 +6,6 @@ Content-Type: application/json
 
 {
     "owner_mail" : "555@gmail.com",
-    "description" : "I am happy today"
+    "description" : "I am happy today",
+    "mission_date" : "2024-08-01"
 }

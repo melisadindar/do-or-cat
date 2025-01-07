@@ -6,4 +6,4 @@ django-cors-headers
 psycopg
 gunicorn
 django-environ
-dos2unix
+#dos2unix
