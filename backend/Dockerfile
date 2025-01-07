@@ -16,10 +16,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Uygulama dosyalarını kopyala
 COPY . .
 
+# Convert scripts to Unix format
+RUN dos2unix /app/entrypoint.sh
+
 EXPOSE 8000
 
+# Entrypoint script'ine çalıştırma izni ver
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Django sunucusunu başlat
