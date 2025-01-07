@@ -11,7 +11,7 @@ img{
     top: -2.2%;
 
 }
-.registerform{
+.loginForm{
     color: #353535;
     display: flex;
     padding: 20px;
@@ -44,7 +44,7 @@ h1{
 
 }
 
-.registerform input{
+.loginForm input{
     height: 38px;
     display: block;
     width: 100%;
