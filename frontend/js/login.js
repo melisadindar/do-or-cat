@@ -11,19 +11,27 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({
+                email,
+                password,
+            })
         });
         
         const data = await response.json();
-        document.getElementById("responseMessage").textContent = data.message;
+        console.log("API Yanıtı:", data); // API yanıtını logla
 
-        if (data.message === "succes"){
+
+        if (data.message === "Sign in is succes"){
             alert("Başarılı Giriş");
+            window.location.href = "calendar.html";
             //kullanıcıyı baska bir sayfaya gönder
             //window.location.href = "/login.html";
         }
+        else{
+            alert(`Giriş başarısız: ${data.message}`);
+        }
+
     }catch (error){
         console.error("Hata:", error);
-        document.getElementById("responseMessage").textContent = "Bir hata oluştu.";
     }
 });

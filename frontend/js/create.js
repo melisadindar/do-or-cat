@@ -1,13 +1,13 @@
 document.getElementById("registerform").addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const firstname = document.getElementById("firstname").value;
-    const lastname = document.getElementById("lastname").value;
+    const first_name = document.getElementById("firstname").value;
+    const last_name = document.getElementById("lastname").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("passwordd").value;
 
-    if (!firstname || !lastname || !email || !password || !confirmPassword) {
+    if (!first_name || !last_name || !email || !password || !confirmPassword) {
         alert("Lütfen tüm alanları doldurun.");
         return;
     }
@@ -24,18 +24,24 @@ document.getElementById("registerform").addEventListener("submit", async functio
 
     try {
         // Backend'e istek gönderiyoruz
-        const response = await fetch("http://localhost:8000/register", {
+            const response = await fetch("http://localhost:8000/auth_service/signup/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                firstname,
-                lastname,
+                first_name,  // Correct key names
+                last_name,
                 email,
                 password,
-            }),
+            })            
         });
+        if (!response.ok) {
+            const errorMessage = await response.text(); // Yanıtın ham içeriğini al
+            console.error("Hata mesajı:", errorMessage);
+            alert("Bir hata oluştu: " + errorMessage);
+            return;
+        }
 
         // Backend'den dönen cevabı işliyoruz
         const data = await response.json();
@@ -48,7 +54,7 @@ document.getElementById("registerform").addEventListener("submit", async functio
         }
     } catch (error) {
         console.error("Hata:", error);
-        alert(`Bir hata oluştu. Lütfen daha sonra tekrar deneyin. Hata detayları: ${error.message}`);
+        alert(`Bir hata oluştu. Lütfen daha sonra tekrar deneyin.`);
     }
 });
 
