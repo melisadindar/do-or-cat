@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #'services.user_service',
     'services.auth_service',
     'services.dailynotes_service',
+    'services.notes_service',
     'corsheaders',
     'rest_framework',
 ]

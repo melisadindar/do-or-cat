@@ -18,10 +18,12 @@ Including another URLconf
 from django.urls import path
 from services.auth_service import views as auth_views
 from services.dailynotes_service import views as dailynotes_views
+from services.notes_service import views as notes_views
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('auth_service/signup/', auth_views.signup),
     path('auth_service/signin/', auth_views.signin),
     path('dailynotes_service/create_dailynotes/', dailynotes_views.create_dailynotes),
+    path('notes_service/create_notes/', notes_views.create_notes),
 ]
