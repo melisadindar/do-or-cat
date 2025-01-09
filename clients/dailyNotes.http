@@ -5,7 +5,7 @@ POST {{url}}/dailynotes_service/create_dailynotes/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "owner_mail" : "555@gmail.com",
+    "reciever_mail" : "555@gmail.com",
     "description" : "I am happy today",
     "mission_date" : "2024-08-01"
 }
