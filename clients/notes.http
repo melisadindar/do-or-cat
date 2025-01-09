@@ -24,7 +24,7 @@ Content-Type: application/json
 
 {
     "reciever_mail" : "555@gmail.com",
-    "note_id" : "3"
+    "note_id" : "6"
 }
 
 ### delete_multiply_notes

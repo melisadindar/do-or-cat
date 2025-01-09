@@ -6,6 +6,43 @@ Content-Type: application/json
 
 {
     "reciever_mail" : "555@gmail.com",
-    "description" : "I am happy today",
+    "description" : "adsflkajsdfkj",
     "mission_date" : "2024-08-01"
+}
+
+### get_dailynotes
+GET {{url}}/dailynotes_service/get_dailynotes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com"
+}
+
+### delete_dailynotes
+DELETE {{url}}/dailynotes_service/delete_dailynotes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com",
+    "note_id" : "5"
+}
+
+### delete_multiply_dailynotes
+DELETE {{url}}/dailynotes_service/delete_multiply_dailynotes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com",
+    "note_ids" : ["1", "4"]
+}
+
+### update_dailynotes
+PUT {{url}}/dailynotes_service/update_dailynotes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com",
+    "note_id" : "3",
+    "description" : "changed description",
+    "mission_date" : "2024-08-02"
 }

@@ -30,4 +30,8 @@ urlpatterns = [
     path('notes_service/delete_notes/', notes_views.delete_notes),
     path('notes_service/delete_multiply_notes/', notes_views.delete_multiply_notes),
     path('notes_service/update_notes/', notes_views.update_notes),
+    path('dailynotes_service/get_dailynotes/', dailynotes_views.get_dailynotes),
+    path('dailynotes_service/delete_dailynotes/', dailynotes_views.delete_dailynotes),
+    path('dailynotes_service/delete_multiply_dailynotes/', dailynotes_views.delete_multiply_dailynotes),
+    path('dailynotes_service/update_dailynotes/', dailynotes_views.update_dailynotes),
 ]
