@@ -6,6 +6,43 @@ Content-Type: application/json
 
 {
     "reciever_mail" : "555@gmail.com",
-    "title" : "My first note",
-    "description" : "I am happy today"
+    "title" : "My second note",
+    "description" : "lalalala"
+}
+
+### get_notes
+GET {{url}}/notes_service/get_notes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com"
+}
+
+### delete_notes
+DELETE {{url}}/notes_service/delete_notes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com",
+    "note_id" : "3"
+}
+
+### delete_multiply_notes
+DELETE {{url}}/notes_service/delete_multiply_notes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com",
+    "note_ids" : ["4", "5"]
+}
+
+### update_notes
+PUT {{url}}/notes_service/update_notes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "reciever_mail" : "555@gmail.com",
+    "note_id" : "8",
+    "title" : "changed title",
+    "description" : "changed description"
 }

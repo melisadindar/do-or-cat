@@ -26,4 +26,8 @@ urlpatterns = [
     path('auth_service/signin/', auth_views.signin),
     path('dailynotes_service/create_dailynotes/', dailynotes_views.create_dailynotes),
     path('notes_service/create_notes/', notes_views.create_notes),
+    path('notes_service/get_notes/', notes_views.get_notes),
+    path('notes_service/delete_notes/', notes_views.delete_notes),
+    path('notes_service/delete_multiply_notes/', notes_views.delete_multiply_notes),
+    path('notes_service/update_notes/', notes_views.update_notes),
 ]
