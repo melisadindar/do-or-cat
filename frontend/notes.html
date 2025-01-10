@@ -17,64 +17,15 @@
     <div class="container">
         <div class="sidebar">
             <button id="newNoteBtn">+ New Note</button>
-            <ul id="noteList">
+            <ul id="title">
                 <!-- Eski notlar burada listelenecek -->
             </ul>
         </div>
         <div class="note-area">
             <h1>Notes</h1>
-            <textarea name="notepad" id="notepad"></textarea>
+            <textarea id="description" placeholder="Note Description"></textarea>
         </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-        const noteList = document.getElementById("noteList");
-        const newNoteBtn = document.getElementById("newNoteBtn");
-        const notepad = document.getElementById("notepad");
-
-        // LocalStorage'dan notları yükle
-        const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
-        savedNotes.forEach(note => {
-            addNoteToList(note);
-        });
-
-        newNoteBtn.addEventListener("click", function() {
-            const newNote = prompt("Enter new note title:");
-            if (newNote) {
-                addNoteToList(newNote);
-                savedNotes.push(newNote);
-                localStorage.setItem("notes", JSON.stringify(savedNotes)); // Notu kaydet
-            }
-        });
-
-        // Notları listeye ekleyen fonksiyon
-        function addNoteToList(note) {
-            const li = document.createElement("li");
-            li.textContent = note;
-
-            // Silme butonunu oluştur
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "Sil";
-            deleteBtn.className = "deleteNoteBtn";
-            deleteBtn.addEventListener("click", function(e) {
-                e.stopPropagation(); // Silme butonuna tıklama olayının not tıklama olayını tetiklemesini engeller
-                const noteIndex = savedNotes.indexOf(note);
-                if (noteIndex > -1) {
-                    savedNotes.splice(noteIndex, 1);
-                    localStorage.setItem("notes", JSON.stringify(savedNotes)); // Notu LocalStorage'dan kaldır
-                }
-                li.remove(); // Notu sayfadan kaldır
-            });
-
-            li.appendChild(deleteBtn); // Silme butonunu liste elemanına ekle
-            li.addEventListener("click", function() {
-                notepad.value = note; // Notu textarea'ya yükle
-            });
-
-            noteList.appendChild(li);
-        }
-    });
-    </script>
+    <script src="js/notes.js"></script>     
 </body>
 </html>
