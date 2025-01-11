@@ -35,6 +35,38 @@
             transform: translate(-50%, -50%); /*öğeyi hem yatayda hem de dikeyde %50 kaydırarak öğreyi ekranın tam ortasına yerleştirir*/
             z-index: 1000; /*katman sırasını belirler. z-index değeri ne kadar yüksekse o kadar üstte yer alır*/
         }
+        .event-details {
+            display: none; /* Başlangıçta görünmez */
+            position: fixed; /* Sayfa kaydırıldığında sabit kalır */
+            background: #d6eadf;
+            border: 1px solid #000000;
+            color: #5d5959;
+            padding: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Gölgeleme efekti ekleyebilirsiniz */
+        }
+
+        .event-details button {
+            position: absolute; /* Mutlak konumlandırma */
+            background-color: #5d5959;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            top: 95%; /* Görev öğesinin ortasında yer alacak şekilde */
+            right: 0; /* Sağ köşeye yerleştir */
+            transform: translateY(-50%); /* Dikeyde ortalamak için */
+        }
+
+
+        .event-details button:hover {
+            background-color: #313131;
+        }
         .modal-header { 
             font-weight:200;
             position: relative;
@@ -44,7 +76,6 @@
         }
         #add-todo-modal .modal-header p{
 
-            
             color: #5d5959;
         }
         #close-add-todo-modal:hover, #close-event-details:hover { /*kapatma çapılarının tıkladığındaki rengini ve oraya gelince imlecin değişmesini ayarlar*/
@@ -66,19 +97,32 @@
         }
         .todo-item {
             display: flex;
+            position: relative;
             align-items: center;
             text-align: left;
             justify-content: flex-start;
             width: 100%; /* Container'ın genişliğini %100 yapalım */
-            max-width: 100%;
-            margin: 5px 0;  /* Her görev arasına boşluk ekler */
-            flex-wrap: wrap;  /* Metin taşarsa alt satıra geçmesini sağlar */
-
-
+            max-width: 100%; /* Maksimum genişlik, taşmayı engeller */
+            margin-bottom: 10px; /* Her görevin arasına boşluk */
+            overflow: hidden; /* Taşan kısmı gizler */
         }
-        .fc-event-main{
-            cursor: url(photos/working-in-background-draw.png), pointer;
 
+        /* Metin kısmının stili */
+        .todo-text {
+            display: inline-block; /* Metni satır içi blok yapar */
+            white-space: nowrap; /* Metnin taşmasını engeller */
+            max-width: calc(100% - 100px);
+            overflow: hidden; /* Taşan metni gizler */
+            text-overflow: ellipsis; /* Taşan metin için '...' gösterir */
+        }
+    
+        .fc-event-main{
+            background-color: #bdb7b0d1;
+            cursor: url(photos/working-in-background-draw.png), pointer;
+            border: none
+        }
+        .fc-daygrid-event{
+            border: none
         }
         .fc-icon-chevron-left{
             cursor: url(photos/working-in-background-draw.png), pointer;
@@ -99,15 +143,18 @@
             text-decoration: line-through;
 
         }
-        .todo-item .delete-btn {
-            background: #ddbea9(185, 185, 185);
-            color: #ddbea9;
-            border: none;
-            padding: 5px;
-            cursor: url(photos/working-in-background-draw.png), pointer;
-            margin-left: auto;
-        }
         
+        .event-details button {
+            position: absolute; /* Mutlak konumlandırma */
+            background-color: #5d5959;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            top: 50%; /* Görev öğesinin ortasında yer alacak şekilde */
+            right: 0; /* Sağ köşeye yerleştir */
+            transform: translateY(-50%); /* Dikeyde ortalamak için */
+        }
         .navbar ul{
             list-style-type: none;
             background-color: #99658f87;
@@ -121,7 +168,7 @@
 
 
         }
-
+        
         .navbar a{
         color: white;
         text-decoration: none;
@@ -153,6 +200,7 @@
             <span id="close-event-details">&times;</span> <!-- &times ifadesi bir html karakter referansıdır ve "x" anlamına gelir--> 
         </div>
         <div id="event-details-content"></div>
+        <ul id="todo-list"></ul>
     </div>
     <div id="add-todo-modal" class="add-todo-modal">
         <div class="modal-header">
@@ -169,169 +217,161 @@
     
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
     <script>
-       document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var eventDetailsEl = document.getElementById('event-details');
-    var eventDetailsContentEl = document.getElementById('event-details-content');
-    var addTodoModal = document.getElementById('add-todo-modal');
-    var addTodoForm = document.getElementById('add-todo-form');
-    var todoInput = document.getElementById('todo');
-    var todoDateInput = document.getElementById('todo-date');
-    var closeAddTodoModal = document.getElementById('close-add-todo-modal');
-    var closeEventDetails = document.getElementById('close-event-details');
+        var calendarEl = document.getElementById('calendar');
+        var eventDetailsEl = document.getElementById('event-details');
+        var eventDetailsContentEl = document.getElementById('event-details-content');
+        var addTodoModal = document.getElementById('add-todo-modal');
+        var addTodoForm = document.getElementById('add-todo-form');
+        var todoInput = document.getElementById('todo');
+        var todoDateInput = document.getElementById('todo-date');
+        var closeAddTodoModal = document.getElementById('close-add-todo-modal');
+        var closeEventDetails = document.getElementById('close-event-details');
 
-    // localStorage'dan görevleri yükle
-    var storedEvents = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+        // localStorage'dan görevleri yükle
+        var storedEvents = JSON.parse(localStorage.getItem('calendarTasks')) || [];
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        editable: true,
-        events: storedEvents, // localStorage'dan gelen görevler
-        dateClick: function(info) {
-            todoDateInput.value = info.dateStr;
-            addTodoModal.style.display = 'block';
-        },
-        eventClick: function(info) {
-            var details = `<h3>${info.event.title}</h3><ul>`; 
-            /*info.event.title tıklanan olayın başlığı. bu başlığı h3 etiketi içine koyuyor.
-            ayrıca listeyi başlatmak için <ul> etiketi ekleniyor.*/
-            info.event.extendedProps.todoList.forEach(function(item, index) {
-                /*info.event tıklanan etkinliğin bilgilerini içerir. örneğin
-                info.event.title = olayın başlığı
-                info.event.start = olayın başlangıç tarihi ve saati
-                info.event.end = olayın bitiş tarihi ve saati
-                extendedProps = FullCalendara ekstra bilgiler eklemeyi sağlar
-                todoList bir dizi şeklinde ve her öğesi bir görev bilgisi içeriyor. forEach bir dizi içindeki her öğeyi sırayla işler
-                Her bir öğe döngüde item olarak adlandırılır. Her öğenin dizideki sırası, index olarak gelir.
-                details kısmı liste öğelerini içeren bir HTML yapısını oluşturuyor. döngü sırasında her görev için bir <li> öğesi ekleniyor.
-                <li class="todo-item" data-index="${index}">: her göre için bir liste öğesi oluşturuluyor.
-                <input type="checkbox" ${item.completed ? 'checked' : ''}>: bir checkbox ekleniyor. eğer item.completed true ise checbox işaretli oluyor aksi halde işaretsiz
-                ${item.text}: görevin açıklaması(örn sunum hazırla) yazdırılıyor
-                <button class="delete-btn">X</button>: her görevin yanına bir silme butonu ekleniyor */
-                details += `
-                <li class="todo-item" data-index="${index}">
-                    <input type="checkbox" ${item.completed ? 'checked' : ''}>
-                    <span class="todo-text">${item.text}</span> <!-- Metni burada bir span içine alıyoruz -->
-                    <button class="delete-btn">X</button>
-                </li>`;
-            });
-            details += `</ul>`; /*yapının sonuna bir kapanış </ul> etiketi ekliyor*/
-            eventDetailsContentEl.innerHTML = details; /*eventDetailsContentEl: daha önce tanımlanmış bir DOM öğesi 
-            innerHTML: bit HTML elementinin içeriğini ayarlamak için kullanılır.
-            yukarıda dinamik olarak oluşturduğumuz HTML kodunu, exentDetailsContentEl öğesinin içine yerleştiriyor*/
-            eventDetailsEl.style.display = 'block';
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            editable: true,
+            events: storedEvents, // localStorage'dan gelen görevler
+            dateClick: function(info) {
+                todoDateInput.value = info.dateStr; // Görev tarihi set edilir
+                todoInput.value = ''; // Yeni görev eklemek için input temizlenir
+                addTodoModal.style.display = 'block'; // Modal açılır
+            },
+            eventClick: function(info) {
+                var event = info.event;
+                var todoList = event.extendedProps.todoList || []; // Event'e bağlı todoList (veya boş dizi)
 
-            // Sil butonuna tıklama olayını ekleyin
-            eventDetailsContentEl.querySelectorAll('.delete-btn').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    var li = e.target.closest('.todo-item');
-                    var index = li.dataset.index;
-                    var event = info.event;
-                    var todoList = event.extendedProps.todoList;
-                    todoList.splice(index, 1); // Görevi sil
+                // Görevleri dinamik olarak oluşturmak için boş bir değişken
+                var details = `<h3>${info.event.title}</h3><ul id="todo-list">`; 
+                console.log(todoList); // todoList'in içeriğini kontrol et
+
+                // Her bir todo'yu listelemek için döngü
+                todoList.forEach(function(item, index) {
+                    details += 
+                    '<li class="todo-item" data-index="' + index + '">' +
+                        '<input type="checkbox" ' + (item.completed ? 'checked' : '') + '>' +
+                        '<span class="todo-text">' + item.text + '</span>' +
+                        '<button class="delete-btn">X</button>' +
+                    '</li>';
+                });
+
+                details += `</ul>`; // Yapının sonuna bir kapanış </ul> etiketi ekliyor
+
+                // HTML içeriğini eventDetailsContentEl içine yerleştiriyoruz
+                eventDetailsContentEl.innerHTML = details;
+
+                // Event modal'ını gösteriyoruz
+                eventDetailsEl.style.display = 'block';
+
+                // Silme butonları için event listener ekleme
+                addDeleteListeners(event, todoList);
+            }
+        });
+
+        // Takvimi render et
+        calendar.render();
+
+        addTodoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var todoTitle = todoInput.value;
+            var todoDate = todoDateInput.value;
+
+            if (todoTitle && todoDate) {
+                // Takvimde var olan bir etkinliği bulalım ya da yeni bir tane oluşturacağız
+                var event = calendar.getEvents().find(event => event.startStr === todoDate);
+
+                if (event) {
+                    // Eğer bu gün için zaten bir event varsa, sadece todoList'e yeni görev ekliyoruz
+                    var todoList = event.extendedProps.todoList || [];
+                    todoList.push({ text: todoTitle, completed: false });
+                    event.setExtendedProp('todoList', todoList); // Todo list'i event'e kaydet
+
+                    updateLocalStorage(); // Güncellenmiş görevleri localStorage'a kaydet
+                    renderTodoList(event, todoList); // Todo list'i tekrar render et
+                } else {
+                    // Eğer bu gün için bir event yoksa, yeni bir event oluşturuyoruz
+                    var newEvent = calendar.addEvent({
+                        title: 'To Do ',
+                        start: todoDate,
+                        extendedProps: {
+                            todoList: [{ text: todoTitle, completed: false }]
+                        }
+                    });
+
+                    updateLocalStorage(); // Güncellenmiş görevleri localStorage'a kaydet
+                    renderTodoList(newEvent, [{ text: todoTitle, completed: false }]); // Todo list'i render et
+                }
+
+                addTodoModal.style.display = 'none'; // Modalı kapat
+            } else {
+                alert('Please enter a task');
+            }
+        });
+
+        // Event details modal kapatma
+        closeEventDetails.addEventListener('click', function() {
+            eventDetailsEl.style.display = 'none';
+        });
+
+        // Add To-Do modal kapatma
+        closeAddTodoModal.addEventListener('click', function() {
+            addTodoModal.style.display = 'none';
+        });
+
+        // Görevleri localStorage'a kaydet
+        function updateLocalStorage() {
+            var events = calendar.getEvents().map(event => ({
+                title: event.title,
+                start: event.startStr,
+                todoList: event.extendedProps.todoList // todoList de dahil
+            }));
+            localStorage.setItem('calendarTasks', JSON.stringify(events));
+        }
+
+        // Silme butonları için event listener ekleyin
+        function addDeleteListeners(event, todoList) {
+            var deleteBtns = eventDetailsContentEl.querySelectorAll('.delete-btn');
+            deleteBtns.forEach(function(btn, index) {
+                btn.addEventListener('click', function() {
+                    todoList.splice(index, 1); // Görevi listeden sil
+                    event.setExtendedProp('todoList', todoList); // Güncellenmiş todoList'i event'e kaydet
+                    updateLocalStorage(); // Güncellenmiş verileri localStorage'a kaydet
+                    renderTodoList(event, todoList); // Todo list'i tekrar render et
 
                     if (todoList.length === 0) {
-                        event.remove(); // Etkinlik tamamen silinir
-                        eventDetailsEl.style.display = 'none'; // Modalı kapat
-                    } else {
-                        // Güncellenmiş görevleri göster
-                        function generateTodoListHtml(todoList) {
-                            var details = `<h3>${info.event.title}</h3><ul>`;
-                            todoList.forEach(function(item, index) {
-                                details += `
-                                    <li class="todo-item" data-index="${index}">
-                                        <input type="checkbox" ${item.completed ? 'checked' : ''}>
-                                        ${item.text}
-                                        <button class="delete-btn">X</button>
-                                    </li>`;
-                            });
-                            details += `</ul>`;
-                            return details;
-                        }
-                        eventDetailsContentEl.innerHTML = generateTodoListHtml(todoList);
-                        updateLocalStorage();
+                        event.remove(); // Eventi takvimden sil
+                        eventDetailsEl.style.display = 'none'; // Pencereyi kapat
                     }
-
-                    li.remove(); // Liste öğesini DOM'dan kaldır
-
-                    // Güncellenen görevleri localStorage'a kaydet
-                    updateLocalStorage();
-                });
-            });
-
-            // Onay kutusuna tıklama olayını ekleyin
-            eventDetailsContentEl.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-                checkbox.addEventListener('change', function(e) {
-                    var li = e.target.closest('.todo-item');
-                    var index = li.dataset.index;
-                    var event = info.event;
-                    var todoList = event.extendedProps.todoList;
-                    todoList[index].completed = e.target.checked;
-                    event.setExtendedProps({ todoList: todoList });
-                    li.classList.toggle('completed', e.target.checked);
-                    
-                    // Güncellenen görevleri localStorage'a kaydet
-                    updateLocalStorage();
                 });
             });
         }
-    });
-    calendar.render();
 
-    // Görevleri localStorage'a kaydet
-    function updateLocalStorage() {
-        var events = calendar.getEvents().map(event => ({
-            title: event.title,
-            start: event.startStr,
-            extendedProps: event.extendedProps
-        }));
-        localStorage.setItem('calendarEvents', JSON.stringify(events));
-    }
+        // Todo list'i render etme
+        function renderTodoList(event, todoList) {
+            var details = `<h3>${event.title}</h3><ul id="todo-list">`;
 
-    // Çarpı butonlarına tıklama olayını ekleyin
-    closeAddTodoModal.addEventListener('click', function() {
-        addTodoModal.style.display = 'none';
-    });
+            // Her bir todo'yu listelemek için döngü
+            todoList.forEach(function(item, index) {
+                details += 
+                '<li class="todo-item" data-index="' + index + '">' +
+                    '<input type="checkbox" ' + (item.completed ? 'checked' : '') + '>' +
+                    '<span class="todo-text">' + item.text + '</span>' +
+                    '<button class="delete-btn">X</button>' +
+                '</li>';
+            });
 
-    closeEventDetails.addEventListener('click', function() {
-        eventDetailsEl.style.display = 'none';
-    });
+            details += `</ul>`; // Yapının sonuna bir kapanış </ul> etiketi ekliyor
 
-    // To-Do ekleme
-    addTodoForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var todoItem = {
-        text: todoInput.value,
-        completed: false
-    };
-    var dateStr = todoDateInput.value;
-    
-    // Takvimde seçilen tarihe yeni bir etkinlik ekleyin
-    var existingEvent = calendar.getEvents().find(event => event.startStr === dateStr);
-    if (existingEvent) {
-        var todoList = existingEvent.extendedProps.todoList || [];
-        todoList.push(todoItem);
+            // HTML içeriğini eventDetailsContentEl içine yerleştiriyoruz
+            eventDetailsContentEl.innerHTML = details;
 
-        // Genişletilmiş özellikleri doğrudan güncelle
-        existingEvent.setProp('extendedProps', { todoList: todoList });
-    } else {
-        calendar.addEvent({
-            title: dateStr,
-            start: dateStr,
-            extendedProps: {
-                todoList: [todoItem]
-            }
-        });
-    }
-    
-    // To-Do ekledikten sonra modal'ı gizleyin ve localStorage'a kaydedin
-    todoInput.value = '';
-    addTodoModal.style.display = 'none'; // Modalı kapat
-    updateLocalStorage();
-});
-
-});
-
+            // Silme butonları için event listener ekleme
+            addDeleteListeners(event, todoList);
+        }
     </script>
+
+    
 </body>
 </html>

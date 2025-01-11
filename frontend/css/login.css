@@ -8,7 +8,7 @@ img{
     position: absolute;
     width: 500px;
     left: 38%;
-    top: -2.2%;
+    top: -8px;
 
 }
 .loginForm{
@@ -23,17 +23,17 @@ img{
     height: 70%;
 }
 .btn{
-    background-color: #dbdbdb;
+    background-color: #bdbcbc;
     position: absolute;
-    left: 1vw;
-    top: 40%;
-    height: 2.5vw;
-    width: 20vw;
+    left: 0px;
+    top: 230px;
+    width: 336px;
+    height: 40px;
 }
 .link{
     position: absolute;
     left: 110px;
-    top:50%;
+    top: 300px;
     color: #353535;    
 }  
 h1{

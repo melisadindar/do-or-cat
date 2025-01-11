@@ -7,8 +7,8 @@ body{
 img{
     position: absolute;
     width: 500px;
-    left: 36%;
-    top: -2.2%;
+    left: 540px;
+    top: -15px;
 
 }
 .registerform{
@@ -16,8 +16,8 @@ img{
     display: flex;
     padding: 20px;
     position: absolute;
-    left: 40%;
-    top: 18%;
+    left: 580px;
+    top: 133px;
     border: 4px solid #353535; /* Çizgi rengi ve kalınlığı */
     border-radius: 8px; /* Köşeleri yuvarlak yapmak için isteğe bağlı */
     height: 70%;
@@ -26,12 +26,12 @@ img{
     background-color: #bdbcbc;
     position: absolute;
     left: 0px;
-    top: 80%;
+    top: 450px;
 }
 .b{
     position: absolute;
     left: 85px;
-    top: 90%;
+    top: 500px;
     color: #353535;    
 }   
 h1{
