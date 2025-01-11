@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'services.auth_service',
     'services.dailynotes_service',
     'services.notes_service',
+    'services.mail_service',
     'corsheaders',
     'rest_framework',
 ]
@@ -139,3 +140,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+EMAIL_HOST = os.getenv("EMAIL_HOST") #kullanılıcak sunucunun adresi
+EMAIL_PORT = os.getenv("EMAIL_PORT") #smtp default 
+EMAIL_USE_TLS = True #güvenli olup olmadığını belirtir
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") #maillerin gönderiliceği mail adresi
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD") #şifresi

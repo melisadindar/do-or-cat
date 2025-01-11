@@ -116,4 +116,3 @@ def update_dailynotes(request):
         note.save()
         return JsonResponse({'message': 'Note updated successfully'}, status=200)
     return JsonResponse({'message': 'invalid request'}, status=400)
-

@@ -1,0 +1,9 @@
+@url = http://localhost:8000
+
+### mail
+POST {{url}}/mail_service/send_password_mail/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "beste@hotmail.com"
+}

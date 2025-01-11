@@ -19,6 +19,7 @@ from django.urls import path
 from services.auth_service import views as auth_views
 from services.dailynotes_service import views as dailynotes_views
 from services.notes_service import views as notes_views
+from services.mail_service import views as mail_views
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
@@ -34,4 +35,5 @@ urlpatterns = [
     path('dailynotes_service/delete_dailynotes/', dailynotes_views.delete_dailynotes),
     path('dailynotes_service/delete_multiply_dailynotes/', dailynotes_views.delete_multiply_dailynotes),
     path('dailynotes_service/update_dailynotes/', dailynotes_views.update_dailynotes),
+    path('mail_service/send_password_mail/', mail_views.send_password_mail),
 ]
