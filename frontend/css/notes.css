@@ -90,6 +90,9 @@ h1{
     margin-bottom: 10px;
     cursor: url('../photos/working-in-background-draw.png'), auto;
 }
+li.active {
+    color: #c6a995;               /* Aktif başlık beyaz renkte görünsün */
+}
 
 #description {
     width: 100%;

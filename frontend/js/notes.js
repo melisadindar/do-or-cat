@@ -1,77 +1,78 @@
-   document.addEventListener("DOMContentLoaded", function() {
-        const title = document.getElementById("title");
-        const newNoteBtn = document.getElementById("newNoteBtn");
-        const notepad = document.getElementById("notepad");
-  
+document.addEventListener("DOMContentLoaded", function() {
+    const titleList = document.getElementById("title");
+    const descriptionTextarea = document.getElementById("description");
 
-        // LocalStorage'dan notları yükle
-        const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
-        savedNotes.forEach(note => {
-            addNoteToList(note);
-        });
+    // LocalStorage'dan notları yükleme
+    function loadNotesFromStorage() {
+        const notesFromStorage = localStorage.getItem("notes");
+        return notesFromStorage ? JSON.parse(notesFromStorage) : [];
+    }
 
-        newNoteBtn.addEventListener("click", function() {
-            const newNote = prompt("Enter new note title:");
-            if (newNote) {
-                addNoteToList(newNote);
-                savedNotes.push(newNote);
-                localStorage.setItem("notes", JSON.stringify(savedNotes)); // Notu kaydet
-            }
-        });
-        // Notları listeye ekleyen fonksiyon
-        function addNoteToList(note) {
+    // Notları LocalStorage'a kaydetme
+    function saveNotesToStorage() {
+        localStorage.setItem("notes", JSON.stringify(notes));
+    }
+
+    // Notları yükle
+    let notes = loadNotesFromStorage();
+    let activeNoteIndex = null;
+
+    function loadNotes() {
+        titleList.innerHTML = '';
+        notes.forEach((note, index) => {
             const li = document.createElement("li");
-            li.textContent = note;
+            li.textContent = note.title;
 
-            // Silme butonunu oluştur
+            li.addEventListener("click", function() {
+                descriptionTextarea.value = note.description;
+                activeNoteIndex = index;
+                setActiveTitle(index);
+            });
+
             const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "Sil";
+            deleteBtn.textContent = "Delete";
             deleteBtn.className = "deleteNoteBtn";
             deleteBtn.addEventListener("click", function(e) {
-                e.stopPropagation(); // Silme butonuna tıklama olayının not tıklama olayını tetiklemesini engeller
-                const noteIndex = savedNotes.indexOf(note);
-                if (noteIndex > -1) {
-                    savedNotes.splice(noteIndex, 1);
-                    localStorage.setItem("notes", JSON.stringify(savedNotes)); // Notu LocalStorage'dan kaldır
-                }
-                li.remove(); // Notu sayfadan kaldır
+                e.stopPropagation();
+                notes.splice(index, 1);
+                saveNotesToStorage();
+                loadNotes();
             });
 
-            li.appendChild(deleteBtn); // Silme butonunu liste elemanına ekle
-            li.addEventListener("click", function() {
-                notepad.value = note; // Notu textarea'ya yükle
-            });
+            li.appendChild(deleteBtn);
+            titleList.appendChild(li);
+        });
+    }
 
-            title.appendChild(li);
-        }
-        document.getElementById("newNoteBtn").addEventListener("click", async function (event) {
-            event.preventDefault();
-            const title = document.getElementById("title").value;
-            const description = document.getElementById("description").value;
-        try{
-            const response = await fetch("http://localhost:8000/notes_service/create_notes", {
-                method: "POST",
-                headers:{
-                    "Content-Type": "application/json",
-                },
-                    body: JSON.stringify({
-                        reciever_mail,
-                        title,
-                        description,
-                    }),
-                });
-
-                const data = await response.json();
-                console.log("API Yanıtı:", data);
-
-                if(data.message=="Note created successfully"){
-                    alert("başarıyla oluştu.");
-                }
-                else{
-                    alert("Hata oluştu");
-                }
-            }catch (error){
-                console.error("Hata:", error);
+    function setActiveTitle(index) {
+        const allTitles = titleList.querySelectorAll("li");
+        allTitles.forEach((li, idx) => {
+            if (idx === index) {
+                li.classList.add("active");
+            } else {
+                li.classList.remove("active");
             }
         });
+    }
+
+    descriptionTextarea.addEventListener("input", function() {
+        if (activeNoteIndex !== null) {
+            notes[activeNoteIndex].description = descriptionTextarea.value;
+            saveNotesToStorage();
+        }
+    });
+
+    document.getElementById("newNoteBtn").addEventListener("click", function() {
+        const newNoteTitle = prompt("Enter new note title:");
+        if (newNoteTitle) {
+            const newNote = { title: newNoteTitle, description: "" };
+            notes.push(newNote);
+            saveNotesToStorage();
+            loadNotes();
+            activeNoteIndex = notes.length - 1;
+            descriptionTextarea.value = "";
+        }
+    });
+
+    loadNotes();
 });
