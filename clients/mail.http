@@ -5,5 +5,14 @@ POST {{url}}/mail_service/send_password_mail/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "email" : "beste@hotmail.com"
+    "email" : "bestegursoy52@hotmail.com"
+}
+
+### verify_reset_code
+POST {{url}}/mail_service/verify_reset_code/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "bestegursoy52@hotmail.com",
+    "code" : "0190"
 }

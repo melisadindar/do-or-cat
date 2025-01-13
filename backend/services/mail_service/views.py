@@ -7,6 +7,7 @@ from django.http import JsonResponse
 import json
 
 from services.mail_service.models import reset_codes
+from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 
@@ -47,3 +48,36 @@ def send_password_mail(request):
             logger.error(f"Error in send_password_mail_view: {e}")
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def verify_reset_code(request):
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+            email = body.get("email")
+            code = body.get("code")
+
+            if not email or not code:
+                return JsonResponse({"error": "Email and code are required"}, status=400)
+
+            # Cache'den kodu al
+            cached_code = cache.get(f"password_reset_code_{email}")
+            if cached_code and cached_code == code:
+                return JsonResponse({"message": "Code verified successfully"}, status=200)
+
+            # Cache'de yoksa veritabanını kontrol et
+            reset_code_entry = reset_codes.objects.filter(reciever_mail=email, code=code).first()
+            if reset_code_entry:
+                return JsonResponse({"message": "Code verified successfully"}, status=200)
+
+            return JsonResponse({"error": "Invalid code or expired"}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        except Exception as e:
+            logger.error(f"Error in verify_reset_code: {e}")
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+

@@ -36,4 +36,6 @@ urlpatterns = [
     path('dailynotes_service/delete_multiply_dailynotes/', dailynotes_views.delete_multiply_dailynotes),
     path('dailynotes_service/update_dailynotes/', dailynotes_views.update_dailynotes),
     path('mail_service/send_password_mail/', mail_views.send_password_mail),
+    path('auth_service/reset_password/', auth_views.reset_password),
+    path('mail_service/verify_reset_code/', mail_views.verify_reset_code),
 ]

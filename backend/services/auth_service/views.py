@@ -1,8 +1,12 @@
 import json
+
 from .models import Users
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_exempt
+import logging
 
+logger = logging.getLogger(__name__)
 
 def signup(request):
     if request.method == 'POST':
@@ -42,5 +46,39 @@ def signin(request):
         return JsonResponse({'message' : 'Sign in is succes'}, status=200)
     return JsonResponse({'message': 'invalid request'}, status=400)
 
+@csrf_exempt
+def reset_password(request):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            email = data.get("email")
+            password = data.get("password")
+            confirm_password = data.get("confirm_password")
+
+            if not email or not password or not confirm_password:
+                return JsonResponse({"error": "Email, password, and confirm password are required"}, status=400)
+
+            if password != confirm_password:
+                return JsonResponse({"error": "Passwords do not match"}, status=400)
+
+            # Kullanıcıyı bul ve şifreyi güncelle
+            user = Users.objects.filter(email=email).first()
+            if not user:
+                return JsonResponse({"error": "User not found"}, status=404)
+
+            user.set_password(password)
+            user.save()
+            return JsonResponse({"message": "Password reset successfully"}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        except Exception as e:
+            logger.error(f"Error in reset_password: {e}")
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
+           
+        
+    
