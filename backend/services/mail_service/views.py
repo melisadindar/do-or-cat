@@ -63,14 +63,14 @@ def verify_reset_code(request):
             # Cache'den kodu al
             cached_code = cache.get(f"password_reset_code_{email}")
             if cached_code and cached_code == code:
-                return JsonResponse({"message": "Code verified successfully"}, status=200)
+                return JsonResponse({"message": "Code verified with cache successfully"}, status=200)
 
             # Cache'de yoksa veritabanını kontrol et
             reset_code_entry = reset_codes.objects.filter(reciever_mail=email, code=code).first()
-            if reset_code_entry:
-                return JsonResponse({"message": "Code verified successfully"}, status=200)
-
-            return JsonResponse({"error": "Invalid code or expired"}, status=400)
+            if reset_code_entry and reset_code_entry.is_valid():
+                return JsonResponse({"message" : "Code is valid"}, status=200)
+            else:
+                return JsonResponse({"error": "Invalid code or expired"}, status=400)
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
