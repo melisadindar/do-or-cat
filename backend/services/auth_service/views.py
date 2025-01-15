@@ -2,9 +2,11 @@ import json
 
 from .models import Users
 from django.http import JsonResponse
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 import logging
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
 logger = logging.getLogger(__name__)
 
@@ -35,16 +37,17 @@ def signin(request):
         if not email or not password:
             return JsonResponse({'message' : 'Enter your email and password'}, status=400)
 
-        try:
-            user = Users.objects.get(email=email)
-        except Users.DoesNotExist:
-            return JsonResponse({'message' : 'User not found'}, status=404)
+        user = authenticate(request, username=email, password=password)
+        print(user.id, user.username)
 
-        if not check_password(password, user.password):
-            return JsonResponse({'message' : 'Incorrect password'}, status=400)
-        
-        return JsonResponse({'message' : 'Sign in is succes'}, status=200)
-    return JsonResponse({'message': 'invalid request'}, status=400)
+        if Users.objects.filter(id=user.id).exists():
+            # Token oluştur veya mevcut tokeni al
+            token, created = Token.objects.get_or_create(user=user)
+            return JsonResponse({'token': token.key}, status=200)
+        else:
+            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
 def reset_password(request):
@@ -79,6 +82,4 @@ def reset_password(request):
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
-           
-        
     

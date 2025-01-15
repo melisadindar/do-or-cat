@@ -8,7 +8,7 @@ Content-Type: application/json
     "first_name" : "Beste",
     "last_name" : "Gürsoy",
     "password" : "123456",
-    "email" : "bestegursoy52@hotmail.com"
+    "email" : "bestegursoyy52@hotmail.com"
 }
 
 
@@ -18,7 +18,7 @@ Content-Type: application/json
 
 {
     "email" : "bestegursoy52@hotmail.com",
-    "password" : "987654"
+    "password" : "123456"
 }
 
 ### Reset password

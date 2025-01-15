@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'services.mail_service',
     'corsheaders',
     'rest_framework',
+    'jwt',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -147,3 +149,11 @@ EMAIL_PORT = os.getenv("EMAIL_PORT") #smtp default
 EMAIL_USE_TLS = True #güvenli olup olmadığını belirtir
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") #maillerin gönderiliceği mail adresi
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD") #şifresi
+
+AUTHENTICATION_BACKENDS = [
+    'services.auth_service.auth_backends.EmailAuthBackend',  # Yeni backend
+    #'django.contrib.auth.backends.ModelBackend',   # Varsayılan backend (isteğe bağlı)
+]
+
+AUTH_USER_MODEL = 'auth_service.Users'
+

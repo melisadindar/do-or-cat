@@ -2,16 +2,17 @@
 
 ### notes
 POST {{url}}/notes_service/create_notes/ HTTP/1.1
+Authorization: ae23631faa343770648c1fb05d1eb668d5e8da22
 Content-Type: application/json
 
 {
-    "reciever_mail" : "555@gmail.com",
-    "title" : "My second note",
+    "title" : " EHEHEHE SANIRIM LAN",
     "description" : "lalalala"
 }
 
 ### get_notes
 GET {{url}}/notes_service/get_notes/ HTTP/1.1
+Authorization: ae23631faa343770648c1fb05d1eb668d5e8da22
 Content-Type: application/json
 
 {
@@ -20,29 +21,32 @@ Content-Type: application/json
 
 ### delete_notes
 DELETE {{url}}/notes_service/delete_notes/ HTTP/1.1
+Authorization: ae23631faa343770648c1fb05d1eb668d5e8da22
 Content-Type: application/json
 
 {
     "reciever_mail" : "555@gmail.com",
-    "note_id" : "6"
+    "note_id" : "4"
 }
 
 ### delete_multiply_notes
 DELETE {{url}}/notes_service/delete_multiply_notes/ HTTP/1.1
+Authorization: ae23631faa343770648c1fb05d1eb668d5e8da22
 Content-Type: application/json
 
 {
     "reciever_mail" : "555@gmail.com",
-    "note_ids" : ["4", "5"]
+    "note_ids" : ["6", "5"]
 }
 
 ### update_notes
 PUT {{url}}/notes_service/update_notes/ HTTP/1.1
+Authorization: ae23631faa343770648c1fb05d1eb668d5e8da22
 Content-Type: application/json
 
 {
     "reciever_mail" : "555@gmail.com",
-    "note_id" : "8",
+    "note_id" : "7",
     "title" : "changed title",
     "description" : "changed description"
 }
