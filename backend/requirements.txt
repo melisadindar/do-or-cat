@@ -6,4 +6,6 @@ django-cors-headers
 psycopg
 gunicorn
 django-environ
+rest-client
+djangorestframework-simplejwt
 #dos2unix

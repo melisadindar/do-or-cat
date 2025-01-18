@@ -1,5 +1,4 @@
 import json
-from operator import ge
 
 from .models import Notes
 from services.auth_service.TokenService import get_current_user
@@ -33,6 +32,10 @@ def get_notes(request):
             return JsonResponse({'message': str(e)}, status=401)  # Token geçersizse hata döndür
         
         notes = Notes.objects.filter(user=user)
+        
+        if not notes:
+            return JsonResponse({'message': 'No notes found for this user'}, status=404)
+
         notes_list = [
             {
                 'title': note.title,
@@ -48,20 +51,13 @@ def get_notes(request):
 
 def delete_notes(request):
     if request.method == 'DELETE':
-        data = json.loads(request.body)
-
-        note_id = data.get('note_id')
-
-        if not note_id:
-            return JsonResponse({'message': 'Note ID is required'}, status=400)
-
         try:
             user = get_current_user(request)
         except ValueError as e:
             return JsonResponse({'message': str(e)}, status=404)
         
         try:
-            note = Notes.objects.get(id=note_id, user=user)
+            note = Notes.objects.get(user=user)
         except Notes.DoesNotExist:
             return JsonResponse({'message': 'Note not found'}, status=404)
         
@@ -72,21 +68,17 @@ def delete_notes(request):
 
 def delete_multiply_notes(request):
     if request.method == 'DELETE':
-        data = json.loads(request.body)
-
-        note_ids = data.get('note_ids')
 
         try:
             user = get_current_user(request)
         except ValueError as e:
             return JsonResponse({'message': str(e)}, status=404)
         
-        for note_id in note_ids:
-            try:
-                note = Notes.objects.get(id=note_id, user=user)
-            except Notes.DoesNotExist:
-                return JsonResponse({'message': 'Note not found'}, status=404)
-            note.delete()
+        try:
+            note = Notes.objects.get(user=user)
+        except Notes.DoesNotExist:
+            return JsonResponse({'message': 'Note not found'}, status=404)
+        note.delete()
 
         return JsonResponse({'message': 'Notes deleted successfully'}, status=200)
 
@@ -95,7 +87,6 @@ def update_notes(request):
     if request.method == 'PUT':
         data = json.loads(request.body)
 
-        note_id = data.get('note_id')
         title = data.get('title')
         description = data.get('description')
 
@@ -105,7 +96,7 @@ def update_notes(request):
             return JsonResponse({'message': str(e)}, status=404)
         
         try:
-            note = Notes.objects.get(id=note_id, user=user)
+            note = Notes.objects.get(user=user)
         except Notes.DoesNotExist:
             return JsonResponse({'message': 'Note not found'}, status=404)
         

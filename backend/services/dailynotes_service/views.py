@@ -1,42 +1,37 @@
 import json
 import re
-from .models import dailynotes
+from .models import Dailynotes
 from django.http import JsonResponse
 from services.auth_service.models import Users
+from services.auth_service.TokenService import get_current_user
 
 def create_dailynotes(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        reciever_mail = data.get('reciever_mail')
         description = data.get('description')
-        mission_date = data.get('mission_date')
 
-
-        if not reciever_mail or not description:
+        if not description:
             return JsonResponse({'message': 'Enter your email and description'}, status=400)
         
         try:
-            user = Users.objects.get(email=reciever_mail)
-        except Users.DoesNotExist:
-            return JsonResponse({'message' : 'User not found'}, status=404)
+            user = get_current_user(request)
+        except ValueError as e:
+            return JsonResponse({'message': str(e)}, status=401)
         
-        dailynotes.objects.create(reciever_mail=user, description=description, mission_date=mission_date)
+        Dailynotes.objects.create(user=user, description=description)
         return JsonResponse({'message': 'Daily note created successfully'}, status=200)
     return JsonResponse({'message': 'invalid request'}, status=400)
 
 def get_dailynotes(request):
     if request.method == 'GET':
-        data = json.loads(request.body)
-
-        receiver_mail = data.get('reciever_mail')
 
         try:
-            user = Users.objects.get(email=receiver_mail)
-        except Users.DoesNotExist:
-            return JsonResponse({'message': 'User not found'}, status=404)
+            user = get_current_user(request)
+        except ValueError as e:
+            return JsonResponse({'message': str(e)}, status=401)
         
-        notes = dailynotes.objects.filter(reciever_mail=user)
+        notes = Dailynotes.objects.filter(user=user)
         notes_list = []
         for note in notes:
             notes_list.append({
@@ -50,19 +45,16 @@ def get_dailynotes(request):
 
 def delete_dailynotes(request):
     if request.method == 'DELETE':
-        data = json.loads(request.body)
 
-        receiver_mail = data.get('reciever_mail')
-        note_id = data.get('note_id')
 
         try:
-            user = Users.objects.get(email=receiver_mail)
-        except Users.DoesNotExist:
-            return JsonResponse({'message': 'User not found'}, status=404)
+            user = get_current_user(request)
+        except ValueError as e:
+            return JsonResponse({'message': str(e)}, status=404)
         
         try:
-            note = dailynotes.objects.get(id=note_id, reciever_mail=user)
-        except dailynotes.DoesNotExist:
+            note = Dailynotes.objects.get(user=user)
+        except Dailynotes.DoesNotExist:
             return JsonResponse({'message': 'Note not found'}, status=404)
         
         note.delete()
@@ -72,23 +64,18 @@ def delete_dailynotes(request):
 
 def delete_multiply_dailynotes(request):
     if request.method == 'DELETE':
-        data = json.loads(request.body)
-
-        receiver_mail = data.get('reciever_mail')
-        note_ids = data.get('note_ids')
 
         try:
-            user = Users.objects.get(email=receiver_mail)
-        except Users.DoesNotExist:
-            return JsonResponse({'message': 'User not found'}, status=404)
+            user = get_current_user(request)
+        except ValueError as e:
+            return JsonResponse({'message': str(e)}, status=404)
+
+        try:
+            note = Dailynotes.objects.get(user=user)
+        except Dailynotes.DoesNotExist:
+            return JsonResponse({'message': 'Note not found'}, status=404)
         
-        for note_id in note_ids:
-            try:
-                note = dailynotes.objects.get(id=note_id, reciever_mail=user)
-            except dailynotes.DoesNotExist:
-                return JsonResponse({'message': 'Note not found'}, status=404)
-            
-            note.delete()
+        note.delete()
         return JsonResponse({'message': 'Notes deleted successfully'}, status=200)
     return JsonResponse({'message': 'invalid request'}, status=400)
 
@@ -96,19 +83,17 @@ def update_dailynotes(request):
     if request.method == 'PUT':
         data = json.loads(request.body)
 
-        receiver_mail = data.get('reciever_mail')
-        note_id = data.get('note_id')
         description = data.get('description')
         mission_date = data.get('mission_date')
 
         try:
-            user = Users.objects.get(email=receiver_mail)
-        except Users.DoesNotExist:
-            return JsonResponse({'message': 'User not found'}, status=404)
+            user = get_current_user(request)
+        except ValueError as e:
+            return JsonResponse({'message': str(e)}, status=404)
         
         try:
-            note = dailynotes.objects.get(id=note_id, reciever_mail=user)
-        except dailynotes.DoesNotExist:
+            note = Dailynotes.objects.get(user=user)
+        except Dailynotes.DoesNotExist:
             return JsonResponse({'message': 'Note not found'}, status=404)
         
         note.description = description

@@ -5,8 +5,9 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 import logging
-from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+from .TokenService import generate_access_token, generate_refresh_token
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,9 @@ def signup(request):
     return JsonResponse({'message': 'invalid request'}, status=400)
 
 def signin(request):
+    logger.fatal("Signin request received")
+    logger.fatal(request.headers)
+    logger.fatal(request.body)
     if request.method == 'POST':
         data = json.loads(request.body)
         email = data.get('email')
@@ -37,15 +41,32 @@ def signin(request):
         if not email or not password:
             return JsonResponse({'message' : 'Enter your email and password'}, status=400)
 
-        user = authenticate(request, username=email, password=password)
-        print(user.id, user.username)
+        try:
+            user = authenticate(request, username=email, password=password)
 
-        if Users.objects.filter(id=user.id).exists():
-            # Token oluştur veya mevcut tokeni al
-            token, created = Token.objects.get_or_create(user=user)
-            return JsonResponse({'token': token.key}, status=200)
-        else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+            if not user:
+                return JsonResponse({'error': 'Invalid credentials'}, status=401)
+            else:
+                access_token, access_exp = generate_access_token(user.id, user.email)
+                refresh_token, refresh_exp = generate_refresh_token(user.id, user.email)
+
+                token = {
+                    "username": user.email,
+                    "access_token": {"token": access_token, "expiration_date": access_exp},
+                    "refresh_token": {
+                        "token": refresh_token,
+                        "expiration_date": refresh_exp,
+                    },
+                }
+                user.refresh_token = refresh_token
+                user.access_token = access_token
+                user.save()
+
+                return JsonResponse(
+                    {"access_token": access_token}, status=200)
+        except Exception as e:
+            logger.error(f"Error in signin: {e}")
+            return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
@@ -81,5 +102,3 @@ def reset_password(request):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
-
-    
