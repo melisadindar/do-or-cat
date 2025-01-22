@@ -40,9 +40,9 @@ urlpatterns = [
     path('dailynotes_service/update_dailynotes/', dailynotes_views.update_dailynotes),
     
     path('mail_service/send_password_mail/', mail_views.send_password_mail),
-    path('auth_service/reset_password/', auth_views.reset_password),
     path('mail_service/verify_reset_code/', mail_views.verify_reset_code),
 
+    path('auth_service/reset_password/', auth_views.reset_password),
     path('auth_service/generate_refresh_token/', token_service.generate_refresh_token),
     path('auth_service/generate_access_token/',  token_service.generate_access_token),
     path('auth_service/verify_token/', token_service.verify_token),

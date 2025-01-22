@@ -8,11 +8,12 @@ Content-Type: application/json
     "first_name" : "Beste",
     "last_name" : "Gürsoy",
     "password" : "123456",
-    "email" : "bestegursoyy52@hotmail.com"
+    "email" : "bestegursoy52@hotmail.com"
 }
 
 
 ### signin
+# @name signin
 POST {{url}}/auth_service/signin/ HTTP/1.1
 Content-Type: application/json
 
@@ -24,10 +25,10 @@ Content-Type: application/json
 
 ### Reset password
 PUT {{url}}/auth_service/reset_password/ HTTP/1.1
+Authorization: Bearer {{signin.response.body.access_token}}
 Content-Type: application/json
 
 {
-    "email": "bestegursoy52@hotmail.com",
     "password": "987654",
     "confirm_password": "987654"
 }

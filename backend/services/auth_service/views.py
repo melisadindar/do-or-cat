@@ -1,5 +1,4 @@
 import json
-
 from .models import Users
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
@@ -7,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import logging
 from django.contrib.auth import authenticate
 from .TokenService import generate_access_token, generate_refresh_token
+from .TokenService import get_current_user
 
 
 logger = logging.getLogger(__name__)
@@ -75,20 +75,19 @@ def reset_password(request):
     if request.method == "PUT":
         try:
             data = json.loads(request.body)
-            email = data.get("email")
             password = data.get("password")
             confirm_password = data.get("confirm_password")
 
-            if not email or not password or not confirm_password:
+            if not password or not confirm_password:
                 return JsonResponse({"error": "Email, password, and confirm password are required"}, status=400)
 
             if password != confirm_password:
                 return JsonResponse({"error": "Passwords do not match"}, status=400)
 
-            # Kullanıcıyı bul ve şifreyi güncelle
-            user = Users.objects.filter(email=email).first()
-            if not user:
-                return JsonResponse({"error": "User not found"}, status=404)
+            try:
+                user = get_current_user(request)
+            except ValueError as e:
+                return JsonResponse({"error": str(e)}, status=401)
 
             user.set_password(password)
             user.save()

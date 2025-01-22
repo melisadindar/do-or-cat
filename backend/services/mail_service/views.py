@@ -5,9 +5,11 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from django.http import JsonResponse
 import json
+from services.auth_service.TokenService import get_current_user
 
 from services.mail_service.models import reset_codes
 from django.views.decorators.csrf import csrf_exempt
+from services.auth_service.models import Users
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +37,15 @@ def send_password_mail(request):
             email = body.get("email")
             if not email:
                 return JsonResponse({"error": "Email is required"}, status=400)
+            
+            user = Users.objects.filter(email=email).first()
 
             code = generate_random_code()
-            cache.set(f"password_reset_code_{email}", code, timeout=300)  # Kod 5 dakika geçerli
+            cache.set(f"password_reset_code_{user.email}", code, timeout=300)  # Kod 5 dakika geçerli
             subject = "Password Reset Code"
             message = f"Your password reset code is {code}"
             send_email(email, subject, message)
-            reset_codes.objects.create(reciever_mail=email, code=code)
+            reset_codes.objects.create(user=user, code=code)
 
             return JsonResponse({"message": "Password reset email sent successfully"}, status=200)
         except Exception as e:
@@ -53,20 +57,23 @@ def send_password_mail(request):
 def verify_reset_code(request):
     if request.method == "POST":
         try:
-            body = json.loads(request.body)
-            email = body.get("email")
-            code = body.get("code")
+            data = json.loads(request.body)
+            code = data.get("code")
 
-            if not email or not code:
+            if not code:
                 return JsonResponse({"error": "Email and code are required"}, status=400)
+            
+            current_user = get_current_user(request)
+            if not current_user:
+                return JsonResponse({"error": "Unauthorized"}, status=401)
 
             # Cache'den kodu al
-            cached_code = cache.get(f"password_reset_code_{email}")
+            cached_code = cache.get(f"password_reset_code_{current_user.email}")
             if cached_code and cached_code == code:
                 return JsonResponse({"message": "Code verified with cache successfully"}, status=200)
 
             # Cache'de yoksa veritabanını kontrol et
-            reset_code_entry = reset_codes.objects.filter(reciever_mail=email, code=code).first()
+            reset_code_entry = reset_codes.objects.filter(user=current_user, code=code).first()
             if reset_code_entry and reset_code_entry.is_valid():
                 return JsonResponse({"message" : "Code is valid"}, status=200)
             else:

@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils.timezone import now
 from datetime import timedelta
+from services.auth_service.models import Users
 
-#from services.auth_service.models import Users
 
 class reset_codes(models.Model):
     id = models.AutoField(primary_key=True)
-    reciever_mail = models.EmailField()
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
     code = models.CharField(max_length=4)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
